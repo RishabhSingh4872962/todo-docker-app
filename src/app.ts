@@ -1,8 +1,7 @@
 import express, { Express, NextFunction, Request, Response } from "express";
-import createHttpError, { HttpError } from "http-errors";
-import { config } from "./config/config";
+import createHttpError from "http-errors";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
-import userRouter from "./user/userRouter";
+import userRouter from "./routes/userRoutes/userRoute";
 
 const app: Express = express();
 
@@ -20,8 +19,8 @@ app.get("/test",  (req:Request, res:Response, next:NextFunction) => {
 });
 
 
-// all users routes
-app.use("/api/users",userRouter)
+//users routes
+app.use("/api/v1/users",userRouter)
 
 
 // global error middleware
