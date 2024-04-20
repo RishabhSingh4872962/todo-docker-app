@@ -1,10 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
-import { userRegister } from "../../controllers/user/userControllers";
+import { userLogin, userRegister } from "../../controllers/user/userControllers";
+import { asyncErrorHandler } from "../../Errors/aysncErrorHandler";
 
 const userRouter=express.Router();
 
 
-userRouter.post("/register",userRegister)
-
+userRouter.post("/register",asyncErrorHandler(userRegister))
+userRouter.post("/login",asyncErrorHandler(userLogin))
 
 export default userRouter;

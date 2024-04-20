@@ -10,7 +10,7 @@ async function runServer(){
     await connectDB().catch(()=>{
         process.exit(1)
     })
-      
+    
     app.listen(port,async()=>{
         console.log(`Server is running on port ${port}`);
     

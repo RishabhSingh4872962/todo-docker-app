@@ -1,6 +1,8 @@
+import { IUser } from '../../interfaces/userSchemaInterface';
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-const userSchema = new mongoose.Schema(
+
+const userSchema = new mongoose.Schema<IUser>(
   {
     firstName: {
       type: String,
@@ -54,13 +56,15 @@ const userSchema = new mongoose.Schema(
     if (self.isModified("password")) {
       self.password = await bcrypt.hash(self.password, 10);
     }
+    console.log(await bcrypt.compare(self.password,"123456"))
     next();
 })
 
+userSchema.methods.comparePassword=function (password:string) {
+  // console.log( bcrypt.compare(this.password,password));
+  
+  return bcrypt.compare(password,this.password);
+}
 
-// userSchema.methods.comparePassword = async function (password: string) {
-//     let self = this as IUser;
-//     return bcrypt.compare(password, self.password).catch((e)=>false);
-//   };
 
-export const User = mongoose.model("Users", userSchema);
+export const User = mongoose.model<IUser>("Users", userSchema);
