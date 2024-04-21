@@ -5,15 +5,15 @@ import userRouter from "./routes/userRoutes/userRoute";
 import helmet from "helmet";
 
 import morgan from "morgan"
-import { asyncErrorHandler } from "./Errors/aysncErrorHandler";
-import { log } from "console";
+import cookieParser from "cookie-parser";
 const app: Express = express();
 
 app.use(express.json());
-
+app.use(cookieParser())
 
 app.use(helmet());
-app.use(morgan("tiny"))
+app.use(morgan("tiny"));
+
 
 // test route
 app.get("/test",  (req:Request, res:Response, next:NextFunction) => {

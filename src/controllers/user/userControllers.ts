@@ -3,6 +3,7 @@ import e, { NextFunction, Request, Response } from "express";
 import { User } from "../../models/userModels/user.model";
 import { IUser } from "../../interfaces/userSchemaInterface";
 import createHttpError from "http-errors";
+import { generateToken } from "../../helpers/generateToken";
 
 interface I_Request_body {
   firstName: string;
@@ -35,7 +36,16 @@ const userRegister = async (
 
   await user.save();
 
+  const token = generateToken({ email: user.email, id: user._id });
+
+  if (!token) {
+    return next(createHttpError(500, "Internal server Error"));
+  }
+
   return res
+    .cookie("token", token, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000 * 3),
+    })
     .status(200)
     .send({ success: true, msg: "User created successfully" });
 };
@@ -47,15 +57,20 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     $or: [{ email }, { phone }],
   }).select("+password");
 
-  if (!user) {
-    return next(createHttpError(403, "User not found "));
+  if (!user || !(await user.comparePassword?.(password))) {
+    return next(createHttpError(403, "Enter the valid Credensials"));
   }
 
-  if (!(await user.comparePassword?.(password))) {
-    return next(createHttpError(401, "Enter the valid Credensials"));
+  const token = generateToken({ email: user.email, id: user._id });
+
+  if (!token) {
+    return next(createHttpError(500, "Internal server Error"));
   }
 
   return res
+    .cookie("token", token, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000 * 3),
+    })
     .status(200)
     .send({ success: true, msg: "User login successfully" });
 };
