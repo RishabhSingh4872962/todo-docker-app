@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-export interface IUser{
+export interface IUser {
     _id?:mongoose.Schema.Types.ObjectId;
     firstName: string;
     lastName: string;
@@ -11,7 +11,7 @@ export interface IUser{
     resetToken?: string;
     resetTokenExpired?: string;
     userChats?: Array<mongoose.Schema.Types.ObjectId>;
-    comparePassword?:(password:string)=>Boolean
+    comparePassword?:(password:string)=>Boolean;
 }
 
-export type userPayload={ email: string, id: mongoose.Schema.Types.ObjectId }
+export type userPayload={ id: mongoose.Schema.Types.ObjectId }

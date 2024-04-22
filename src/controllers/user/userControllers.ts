@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import e, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { User } from "../../models/userModels/user.model";
 import { IUser } from "../../interfaces/userSchemaInterface";
 import createHttpError from "http-errors";
@@ -106,8 +106,42 @@ const editUser = async (req: Request, res: Response, next: NextFunction) => {
   res.status(202).send({
     success: true,
     msg: "user edit succesfully",
-    newUser: user,
   });
 };
 
-export { userRegister, userLogin, editUser };
+const editPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const {
+    oldPassword,
+    newPassword,
+    confirmPassword,
+  }: { oldPassword: string; newPassword: string; confirmPassword: string } =
+    req.body;
+
+  if (newPassword != confirmPassword) {
+    return next(createHttpError(403, "Password does't match"));
+  }
+  let user_id = (req as I_CustomRequest).user;
+  const user = await User.findById({ _id: user_id.id }).select("+password");
+
+  let result: Boolean | undefined = await user?.comparePassword?.(oldPassword);
+
+  if (!user) {
+    return next(createHttpError(500, "Internal server Error"));
+  }
+
+  if (!result) {
+    return next(createHttpError(400, "Enter the valid credensials"));
+  }
+
+  user.password = newPassword;
+
+  await user.save();
+
+  res.status(200).send({ success: true, msg: "password change successfully" });
+};
+
+export { userRegister, userLogin, editUser, editPassword };

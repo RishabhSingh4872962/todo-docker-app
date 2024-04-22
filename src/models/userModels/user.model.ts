@@ -61,7 +61,9 @@ const userSchema = new mongoose.Schema<IUser>(
     next();
 })
 
-userSchema.methods.comparePassword=function (password:string) {
+
+
+userSchema.methods.comparePassword=function <P>(password:string) {
   // console.log( bcrypt.compare(this.password,password));
   
   return bcrypt.compare(password,this.password);
