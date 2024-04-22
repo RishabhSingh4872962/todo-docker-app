@@ -6,7 +6,6 @@ type verifyJWT = (token: string) => userPayload | null;
 
 export const verifyToken: verifyJWT = (token: string) => {
   if (config?.jwtSecret) {
-    // console.log(jwt.verify(token, config?.jwtSecret, { complete: true }));
 
     return jwt.verify(token, config?.jwtSecret, { complete: true })
       .payload as userPayload;

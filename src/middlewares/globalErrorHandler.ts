@@ -6,9 +6,6 @@ import { config } from '../config/config';
 export const globalErrorHandler=function(err: HttpError, req: Request, res: Response, next: NextFunction) {
     const statusCode = err.statusCode || 500;
     const errorStack = config.env === "Development" ? err.stack : "Internal server Error";
-    
-  
-    console.log(err);
-    
+        
     return res.status(statusCode).send({ message: err.message, errorStack });
   }
