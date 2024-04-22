@@ -13,3 +13,5 @@ export interface IUser{
     userChats?: Array<mongoose.Schema.Types.ObjectId>;
     comparePassword?:(password:string)=>Boolean
 }
+
+export type userPayload={ email: string, id: mongoose.Schema.Types.ObjectId }

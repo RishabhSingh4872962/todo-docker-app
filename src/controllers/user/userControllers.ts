@@ -4,6 +4,7 @@ import { User } from "../../models/userModels/user.model";
 import { IUser } from "../../interfaces/userSchemaInterface";
 import createHttpError from "http-errors";
 import { generateToken } from "../../helpers/generateToken";
+import { I_CustomRequest } from "../../middlewares/isUserAuthenticated";
 
 interface I_Request_body {
   firstName: string;
@@ -36,7 +37,7 @@ const userRegister = async (
 
   await user.save();
 
-  const token = generateToken({ email: user.email, id: user._id });
+  const token = generateToken({ id: user._id });
 
   if (!token) {
     return next(createHttpError(500, "Internal server Error"));
@@ -61,7 +62,8 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     return next(createHttpError(403, "Enter the valid Credensials"));
   }
 
-  const token = generateToken({ email: user.email, id: user._id });
+  // const payLoad = { id: user._id };
+  const token = generateToken({ id: user._id });
 
   if (!token) {
     return next(createHttpError(500, "Internal server Error"));
@@ -75,4 +77,37 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     .send({ success: true, msg: "User login successfully" });
 };
 
-export { userRegister, userLogin };
+const editUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { newFirstName, newLastName, newEmail, newPhone } = req.body;
+
+  const alreayUser = await User.findOne<IUser>({
+    $or: [{ email: newEmail }, { phone: newPhone }],
+  });
+  if (alreayUser) {
+    return next(createHttpError(401, "This credensials already exist"));
+  }
+
+  let existUser = (req as I_CustomRequest).user;
+
+  const user = await User.findOneAndUpdate(
+    { _id: existUser.id },
+    {
+      firstName: newFirstName,
+      lastName: newLastName,
+      email: newEmail,
+      phone: newPhone,
+    },
+    { runValidators: true, timestamps: true }
+  );
+  if (!user) {
+    return next(createHttpError(500, "Internal server error"));
+  }
+
+  res.status(202).send({
+    success: true,
+    msg: "user edit succesfully",
+    newUser: user,
+  });
+};
+
+export { userRegister, userLogin, editUser };

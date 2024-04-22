@@ -45,6 +45,7 @@ const userSchema = new mongoose.Schema<IUser>(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Chat",
+        select:false
       },
     ],
   },

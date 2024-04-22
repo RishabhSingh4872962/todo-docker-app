@@ -1,6 +1,7 @@
-import jwt, { JwtPayload, Secret } from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
 import { config } from "../config/config"
+import { userPayload } from "../interfaces/userSchemaInterface"
 
 type generateJWT=(userData:JwtPayload)=>string|null
 
