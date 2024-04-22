@@ -9,7 +9,7 @@ export interface IUser {
     phone: number;
     password: string;
     resetToken?: string;
-    resetTokenExpired?: string;
+    resetTokenExpired?: Number;
     userChats?: Array<mongoose.Schema.Types.ObjectId>;
     comparePassword?:(password:string)=>Boolean;
 }

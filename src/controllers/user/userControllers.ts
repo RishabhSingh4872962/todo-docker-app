@@ -1,9 +1,11 @@
+import { generateToken } from "./../../helpers/generateToken";
 import bcrypt from "bcrypt";
+
+import crypto from "crypto";
 import { NextFunction, Request, Response } from "express";
 import { User } from "../../models/userModels/user.model";
 import { IUser } from "../../interfaces/userSchemaInterface";
 import createHttpError from "http-errors";
-import { generateToken } from "../../helpers/generateToken";
 import { I_CustomRequest } from "../../middlewares/isUserAuthenticated";
 
 interface I_Request_body {
@@ -144,4 +146,88 @@ const editPassword = async (
   res.status(200).send({ success: true, msg: "password change successfully" });
 };
 
-export { userRegister, userLogin, editUser, editPassword };
+const resetTokenGen = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email }: { email: string } = req.body;
+  const generateResetToken = crypto.randomBytes(32).toString("hex");
+
+  const updateResetToken = crypto
+    .createHash("sha256")
+    .update(generateResetToken)
+    .digest("hex");
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return next(createHttpError(400, "Enter the valid Credensials"));
+  }
+  user.resetToken = updateResetToken;
+
+  user.resetTokenExpired = Date.now() + 90000;
+
+  await user.save();
+
+  //  todo --> send gernated token to user email
+  return res.status(201).send({ success: true, generateResetToken });
+};
+
+const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { resetToken } = req.params;
+  const { newPassowrd, confirmPassword } = req.body;
+
+  if (newPassowrd != confirmPassword) {
+    return res
+      .status(401)
+      .send({ success: false, msg: "Enter the valid credensials" });
+  }
+
+  const updateResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetToken: updateResetToken,
+    resetTokenExpired: { $gt: Date.now() },
+  });
+  console.log(user);
+
+  if (!user) {
+    return res
+      .status(200)
+      .send({ success: true, msg: "token expired ,generate new token" });
+  }
+
+  user.password = newPassowrd;
+  user.resetToken = undefined;
+  user.resetTokenExpired = undefined;
+
+  await user.save();
+
+  return res
+    .status(201)
+    .send({ success: true, msg: "password reset successfully" });
+};
+
+const userLogout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  return res.cookie("token","").status(200).send({success:true,msg:"user logout successfully"})
+};
+export {
+  userRegister,
+  userLogin,
+  editUser,
+  editPassword,
+  resetTokenGen,
+  resetPassword,
+  userLogout
+};

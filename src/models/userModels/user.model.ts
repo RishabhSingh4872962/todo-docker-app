@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema<IUser>(
       select: false,
     },
     resetTokenExpired: {
-      type: String,
+      type: Number,
       select: false,
     },
     userChats: [
@@ -57,7 +57,6 @@ const userSchema = new mongoose.Schema<IUser>(
     if (self.isModified("password")) {
       self.password = await bcrypt.hash(self.password, 10);
     }
-    console.log(await bcrypt.compare(self.password,"123456"))
     next();
 })
 
