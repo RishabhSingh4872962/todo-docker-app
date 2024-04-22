@@ -450,6 +450,38 @@ const userLogout = async (req: Request, res: Response, next: NextFunction) => {
     .status(200)
     .send({ success: true, msg: "user logout successfully" });
 };
+
+/**
+ * @swagger
+ * /deleteuser:
+ *   delete:
+ *     summary: delete the user
+ *     description: it will delete the user prrmanently
+ *     responses:
+ *            200:
+ *             description: user deleted successfully
+ *            500:
+ *             description: Internal Server Error
+ */
+const deleteUser=async (req: Request, res: Response, next: NextFunction) => {
+
+  let user_id = (req as I_CustomRequest).user;
+
+  const user=await User.findOne({_id:user_id.id});
+
+
+  if (!user) {
+    res.clearCookie("token")
+    return next(createHttpError(500,"Internal server Error"))
+  }
+
+  await user.remove()
+  return res
+    .cookie("token", "")
+    .status(200)
+    .send({ success: true, msg: "user deleted successfully" });
+};
+
 export {
   userRegister,
   userLogin,
@@ -458,4 +490,5 @@ export {
   resetTokenGen,
   resetPassword,
   userLogout,
+  deleteUser
 };

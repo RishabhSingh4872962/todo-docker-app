@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import {
+  deleteUser,
   editPassword,
   editUser,
   resetPassword,
@@ -28,4 +29,5 @@ userRouter.put(
 userRouter.post("/resetToken", asyncErrorHandler(resetTokenGen));
 userRouter.post("/resetPassword/:resetToken", asyncErrorHandler(resetPassword));
 userRouter.get("/logout", asyncErrorHandler(userLogout));
+userRouter.delete('/deleteuser',asyncErrorHandler(isUserAuthenticated),asyncErrorHandler(deleteUser))
 export default userRouter;

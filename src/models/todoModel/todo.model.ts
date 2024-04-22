@@ -17,7 +17,7 @@ const todoSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' ,select:false},
   },
   {
     timestamps: true,
