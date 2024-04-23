@@ -1,8 +1,8 @@
-FROM node:20-alpine as Development
+FROM node:20-alpine
 
-WORKDIR /develop/app
+WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json .
 
 RUN npm install
 
@@ -10,26 +10,4 @@ COPY . .
 
 RUN npm run build
 
-FROM node:20-alpine as Production
-
-ARG NODE_ENV
-ENV NODE_ENV=${NODE_ENV}
-
-WORKDIR /prod/app
-
-COPY package*.json .
-
-RUN npm ci --only=production
-
-COPY --from=Development /develop/app/dist ./src
-
-CMD [ "node","src/server.js" ]
-
-# ./app   node_modules
-#         src
-#         dist/src
-# 
-#
-#
-#
-#
+CMD [ "node","dist/server.js" ]

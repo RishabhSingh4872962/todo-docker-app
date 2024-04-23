@@ -306,7 +306,7 @@ const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   let user_id = (req as I_CustomRequest).user;
 
-  const todo = await Todo.findOne({
+  const todo = await Todo.findOneAndDelete({
     $and: [{ _id: id }, { userId: user_id.id }],
   });
   if (!todo) {
@@ -315,7 +315,8 @@ const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
       .send({ success: false, msg: "todo not found with this id" });
   }
 
-  await todo.remove();
+
+ 
   return res
     .status(200)
     .send({ success: true, msg: "todo delete succesfully" });

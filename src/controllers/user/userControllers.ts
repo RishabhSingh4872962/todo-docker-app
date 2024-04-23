@@ -467,15 +467,13 @@ const deleteUser=async (req: Request, res: Response, next: NextFunction) => {
 
   let user_id = (req as I_CustomRequest).user;
 
-  const user=await User.findOne({_id:user_id.id});
+  const user=await User.findOneAndDelete({_id:user_id.id});
 
 
   if (!user) {
     res.clearCookie("token")
     return next(createHttpError(500,"Internal server Error"))
   }
-
-  await user.remove()
   return res
     .cookie("token", "")
     .status(200)
