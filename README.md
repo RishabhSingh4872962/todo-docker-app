@@ -10,7 +10,7 @@
  - search .env.example file   (#Rename the file) remove the  .example  from the .env.example file
  - make sure file name should be .env
  - copy PORT ,MONGO_URL ,JWT_SECRET_KEY ,JWT_EXPIRE and their values to .env file
-   
+![Screenshot 2024-04-23 224747](https://github.com/RishabhSingh4872962/todo-docker-app/assets/109566428/c39aeb98-4bda-4d7a-ad0b-0f993722438d)
    - it should be looks like 
      - PORT=3001
      - MONGO_URL=mongodb://localhost:27017/chatify
