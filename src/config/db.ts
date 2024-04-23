@@ -16,8 +16,6 @@ const connectDB=async()=>{
         console.log("Db connection Error");
         
        })
-     
-    console.log(config.mongo_url)
    await mongoose.connect(config.mongo_url as string)
 
   

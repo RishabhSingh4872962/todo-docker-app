@@ -15,10 +15,8 @@ const options: swaggerJSDoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:3001/api/v1/user",
-      },{
-        url: "http://localhost:3001/api/v1/todo",
-      },
+        url: "http://localhost:3001/api/v1",
+      }
     ],
   },
   apis: ["./src/controllers/user/userControllers.ts","./src/controllers/todos/todosControllers.ts"],

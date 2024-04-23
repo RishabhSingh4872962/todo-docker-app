@@ -4,10 +4,12 @@ import { I_CustomRequest } from "../../middlewares/isUserAuthenticated";
 
 /**
  * @swagger
- * /create:
+ * /todo/create:
  *   post:
  *     summary: create the todo
  *     description: It will create the todo
+ *     tags:
+ *       - Todo 
  *     requestBody:
  *       required: true
  *       content:
@@ -69,6 +71,8 @@ const createTodo = async (req: Request, res: Response, next: NextFunction) => {
     description,
   }: { name: string; complete: boolean; description: string } = req.body;
 
+  
+
   let user_id = (req as I_CustomRequest).user;
   const todo = new Todo({
     name,
@@ -84,10 +88,12 @@ const createTodo = async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /todo/{id}:
+ * /todo/todo/{id}:
  *   get:
  *     summary: Get Todo
  *     description: get the todo with the user id
+ *     tags:
+ *       - Todo 
  *     parameters:
  *       - in: path
  *         name: id
@@ -153,10 +159,12 @@ const getTodo = async (req: Request, res: Response, next: NextFunction) => {
 };
 /**
  * @swagger
- * /todos:
+ * /todo/todos:
  *   get:
  *     summary: Get all todos for a user
  *     description: Retrieve all todos belonging to the authenticated user.
+ *     tags:
+ *       - Todo 
  *     responses:
  *       200:
  *         description: Returns the list of todos belonging to the user.
@@ -218,10 +226,12 @@ const getAllTodo = async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /edit/{id}:
+ * /todo/edit/{id}:
  *   put:
  *     summary: Edit the Todo
  *     description: Edit the todo with the given todo id
+ *     tags:
+ *       - Todo 
  *     parameters:
  *       - in: path
  *         name: id
@@ -282,10 +292,12 @@ const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /delete/{id}:
+ * /todo/delete/{id}:
  *   delete:
  *     summary: Delete the Todo
  *     description: Delete the todo with the given todo id
+ *     tags:
+ *       - Todo 
  *     parameters:
  *       - in: path
  *         name: id

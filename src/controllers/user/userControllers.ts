@@ -18,10 +18,12 @@ interface I_Request_body {
 
 /**
  * @swagger
- * /register:
+ * /user/register:
  *   post:
  *     summary: Create a new user
  *     description: Create a new user in the database
+ *     tags:
+ *      - User
  *     requestBody:
  *       required: true
  *       content:
@@ -61,8 +63,6 @@ const userRegister = async (
     return next(createHttpError(400, "User already exists"));
   }
 
-  console.log(existUser);
-
   const user = new User<IUser>({
     firstName,
     lastName,
@@ -88,10 +88,12 @@ const userRegister = async (
 };
 /**
  * @swagger
- * /login:
+ * /user/login:
  *   post:
  *     summary: Login the user
  *     description: It will login the user
+ *     tags:
+ *      - User
  *     requestBody:
  *       required: true
  *       content:
@@ -142,10 +144,12 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /edit:
+ * /user/edit:
  *   put:
  *     summary: Update the user
  *     description: It will update the user
+ *     tags:
+ *      - User
  *     requestBody:
  *       required: true
  *       content:
@@ -174,21 +178,21 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
 
 const editUser = async (req: Request, res: Response, next: NextFunction) => {
   const {
-    newFirstName,
-    newLastName,
-    newEmail,
-    newPhone,
+    newFirstName = undefined,
+    newLastName = undefined,
+    newEmail = undefined,
+    newPhone = undefined,
   }: {
-    newFirstName: string;
-    newLastName: string;
-    newEmail: string;
-    newPhone: number;
+    newFirstName: string | undefined;
+    newLastName: string | undefined;
+    newEmail: string | undefined;
+    newPhone: number | undefined;
   } = req.body;
 
   if (
-    newEmail.trim().endsWith(".com") &&
-    newEmail.includes("@") &&
-    newPhone.toString().length == 10
+    newEmail?.trim().endsWith(".com") &&
+    newEmail?.includes("@") &&
+    newPhone?.toString().length == 10
   ) {
     return next(createHttpError(405, "Enter the valid credensials"));
   }
@@ -215,8 +219,6 @@ const editUser = async (req: Request, res: Response, next: NextFunction) => {
     { runValidators: true, timestamps: true }
   );
 
-  console.log(req.body);
-
   if (!user) {
     return next(createHttpError(500, "Internal server error"));
   }
@@ -229,10 +231,12 @@ const editUser = async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /pass:
+ * /user/pass:
  *   put:
  *     summary: Edit the password
  *     description: It will edit the password of the user in the database
+ *     tags:
+ *      - User
  *     requestBody:
  *       required: true
  *       content:
@@ -294,10 +298,12 @@ const editPassword = async (
 
 /**
  * @swagger
- * /resetToken:
+ * /user/resetToken:
  *   post:
  *     summary: Generate the reset token
  *     description: Generate the reset token by user email
+ *     tags:
+ *      - User
  *     requestBody:
  *       required: true
  *       content:
@@ -344,22 +350,22 @@ const resetTokenGen = async (
   await user.save();
 
   //  todo --> send gernated token to user email
-  return res
-    .status(201)
-    .send({
-      success: true,
-      generateResetToken,
-      msg: "Token gerneated succesfully",
-    });
+  return res.status(201).send({
+    success: true,
+    generateResetToken,
+    msg: "Token gerneated succesfully",
+  });
 };
 
 // 363a965d94ce330920eed635e3f53a95e494098f8d2a6ad54cbb2bad7c94d2fe
 /**
  * @swagger
- * /resetPassword/{resetToken}:
+ * /user/resetPassword/{resetToken}:
  *   post:
  *     summary: Reset Password
  *     description: Reset the password using the reset token
+ *     tags:
+ *      - User
  *     parameters:
  *       - in: path
  *         name: resetToken
@@ -412,7 +418,6 @@ const resetPassword = async (
     resetToken: updateResetToken,
     resetTokenExpired: { $gt: Date.now() },
   });
-  console.log(user);
 
   if (!user) {
     return res
@@ -433,10 +438,12 @@ const resetPassword = async (
 
 /**
  * @swagger
- * /logout:
+ * /user/logout:
  *   get:
  *     summary: logout the user
  *     description: it will logout the user
+ *     tags:
+ *      - User
  *     responses:
  *            200:
  *             description: user logout successfully
@@ -453,26 +460,26 @@ const userLogout = async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /deleteuser:
+ * /user/deleteuser:
  *   delete:
  *     summary: delete the user
  *     description: it will delete the user prrmanently
+ *     tags:
+ *      - User
  *     responses:
  *            200:
  *             description: user deleted successfully
  *            500:
  *             description: Internal Server Error
  */
-const deleteUser=async (req: Request, res: Response, next: NextFunction) => {
-
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   let user_id = (req as I_CustomRequest).user;
 
-  const user=await User.findOneAndDelete({_id:user_id.id});
-
+  const user = await User.findOneAndDelete({ _id: user_id.id });
 
   if (!user) {
-    res.clearCookie("token")
-    return next(createHttpError(500,"Internal server Error"))
+    res.clearCookie("token");
+    return next(createHttpError(500, "Internal server Error"));
   }
   return res
     .cookie("token", "")
@@ -488,5 +495,5 @@ export {
   resetTokenGen,
   resetPassword,
   userLogout,
-  deleteUser
+  deleteUser,
 };
