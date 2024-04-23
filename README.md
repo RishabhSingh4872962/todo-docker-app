@@ -3,7 +3,7 @@
 ## INSTRUCTIONS
 # Make sure your system have the Docker and git(optional) if you use clone the project then git will be must
  ## for git user
-    - run git clone https://github.com/RishabhSingh4872962/todo-docker-app.git 
+    - git clone https://github.com/RishabhSingh4872962/todo-docker-app.git 
  ## for not git user   
  - if don't want to install git then download the zip file
  - extract the code from the file use  ## Winrar 
@@ -21,7 +21,8 @@
      - JWT_EXPIRE=3Days
 
 ## RUN
- - open terminal in code editor 
- - run docker compose up
+ - open terminal in code editor
+### run
+    docker compose up
 
   - open any browser  enter this url http://localhost:3001/docs/
