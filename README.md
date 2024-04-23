@@ -12,10 +12,10 @@
  - copy PORT ,MONGO_URL ,JWT_SECRET_KEY ,JWT_EXPIRE and their values to .env file
    
    - it should be looks like 
-         - PORT=3001
-         - MONGO_URL=mongodb://localhost:27017/chatify
-         - JWT_SECRET_KEY=$Sh_rIsH@639542
-         - JWT_EXPIRE=3Days
+     - PORT=3001
+     - MONGO_URL=mongodb://localhost:27017/chatify
+     - JWT_SECRET_KEY=$Sh_rIsH@639542
+     - JWT_EXPIRE=3Days
 
 ## RUN
  - open terminal in code editor 
