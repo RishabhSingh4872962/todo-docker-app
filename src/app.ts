@@ -9,10 +9,10 @@ import todoRoute from "./routes/todoRoutes/todoRoutes";
 import { asyncErrorHandler } from "./Errors/aysncErrorHandler";
 import { isUserAuthenticated } from "./middlewares/isUserAuthenticated";
 const app: Express = express();
-
+import cors from "cors"
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(cors())
 app.use(helmet());
 app.use(morgan("tiny"));
 
