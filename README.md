@@ -2,6 +2,9 @@
 
 ## INSTRUCTIONS
 # Make sure your system have the Docker and git(optional) if you use clone the project then git will be must
+ ## for git user
+    - run git clone https://github.com/RishabhSingh4872962/todo-docker-app.git 
+ ## for not git user   
  - if don't want to install git then download the zip file
  - extract the code from the file use  ## Winrar 
  - open unzip folder in any code editor
