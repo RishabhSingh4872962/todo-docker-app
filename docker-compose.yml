@@ -1,0 +1,32 @@
+version: '3.0'
+
+services:
+  # MongoDB Service
+  mongo_db:
+    build: ./mongoimage
+    # Always restart the container if it stops for any reason
+    restart: always
+    # Mount a volume to persist data
+    volumes:
+      - mongo_data:/data/db
+
+  # API Service
+  api:
+    # Build the API service from the Dockerfile in the current directory
+    build: .
+    # Map port 3001 on the host to port 3001 in the container
+    ports:
+      - "3001:3001"
+    # Set environment variables required by your Node.js application
+    environment:
+      - PORT=3001
+      - MONGO_URL=mongodb://mongo_db:27017/chatify
+      - NODE_ENV=Development
+      - JWT_SECRET_KEY=123456789
+      - JWT_EXPIRE=3Days
+    # Specify that the API service depends on the MongoDB service
+    depends_on:
+      - mongo_db
+
+volumes:
+  mongo_data: # Persistent volume for MongoDB data
