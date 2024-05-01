@@ -4,7 +4,9 @@ import connectDB from "./src/config/db";
 
 import swaggerJSDoc from "swagger-jsdoc";
 import SwaggerUI from "swagger-ui-express";
-
+import server from "./src/socketServer";
+import cluster from "node:cluster";
+import os from "node:os"
 const options: swaggerJSDoc.Options = {
   definition: {
     openapi: "3.0.0",
@@ -30,9 +32,20 @@ async function runServer() {
     process.exit(1);
   });
   app.use("/docs", SwaggerUI.serve, SwaggerUI.setup(swaggerSpecs));
-  app.listen(port, async () => {
+  server.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
   });
 }
 
-runServer();
+
+if (cluster.isPrimary) {
+  console.log(`Cluster master is running ${process.pid}`);
+  const maxCUPs=os.cpus().length/2;
+
+  for (let i = 0; i < maxCUPs; i++) {
+    cluster.fork()    
+  }
+}else{
+  console.log(`Worker is started ${process.pid}`);
+  runServer()
+}
